@@ -5,9 +5,11 @@ defmodule CircuitBreaker.ManagerClient do
 
   @server_name :circuit_manager
 
-  @spec closed?(circuit_name()) :: {:ok, any()} | {:error, any()}
-  def closed?(circuit_name) do
-    GenServer.call(@server_name, {:is_closed?, circuit_name})
+  @spec is_closed?(circuit_name()) :: {:ok, any()} | {:error, any()}
+  def is_closed?(circuit_name) do
+    is_closed? = GenServer.call(@server_name, {:is_closed?, circuit_name})
+
+    {:ok, is_closed?}
   end
 
   @spec open(circuit_name()) :: {:ok, any()} | {:error, any()}

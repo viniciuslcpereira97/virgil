@@ -19,6 +19,8 @@ defmodule CircuitBreaker.MixProject do
   end
 
   defp deps do
-    []
+    [
+      {:telemetry, "~> 1.2.1"}
+    ]
   end
 end
