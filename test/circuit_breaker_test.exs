@@ -2,7 +2,7 @@ defmodule CircuitBreakerTest do
   use ExUnit.Case
   doctest CircuitBreaker
 
-  test "greets the world" do
+  test "execute circuit" do
     assert CircuitBreaker.hello() == :world
   end
 end

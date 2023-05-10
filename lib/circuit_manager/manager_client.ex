@@ -21,4 +21,12 @@ defmodule CircuitBreaker.ManagerClient do
   def close(circuit_name) do
     GenServer.cast(@server_name, {:close, circuit_name})
   end
+
+  def increase_error_counter(circuit_name) do
+    GenServer.call(@server_name, {:increase_error_counter, circuit_name})
+  end
+
+  def decrease_error_counter(circuit_name) do
+    GenServer.call(@server_name, {:decrease_error_counter, circuit_name})
+  end
 end
