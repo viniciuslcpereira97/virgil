@@ -1,5 +1,5 @@
-defmodule CircuitBreaker.SuccessCircuit do
-  use CircuitBreaker.Circuit,
+defmodule Virgil.SuccessCircuit do
+  use Virgil.Circuit,
     circuit_name: :success_circuit,
     error_threshold: 3
 

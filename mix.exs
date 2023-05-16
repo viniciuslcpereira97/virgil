@@ -1,9 +1,9 @@
-defmodule CircuitBreaker.MixProject do
+defmodule Virgil.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :circuit_breaker,
+      app: :virgil,
       version: "0.1.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
@@ -17,14 +17,15 @@ defmodule CircuitBreaker.MixProject do
 
   def application do
     [
-      mod: {CircuitBreaker.Application, []},
+      mod: {Virgil.Application, []},
       extra_applications: [:logger]
     ]
   end
 
   defp deps do
     [
-      {:telemetry, "~> 1.2.1"}
+      {:telemetry, "~> 1.2.1"},
+      {:libcluster, "~> 3.3.2"}
     ]
   end
 end
