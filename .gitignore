@@ -25,4 +25,4 @@ circuit_breaker-*.tar
 # Temporary files, for example, from tests.
 /tmp/
 
-remote.md
+lib/test_circuit/

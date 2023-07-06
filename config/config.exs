@@ -8,5 +8,6 @@ config :virgil,
   circuits: [
     Example,
     Test,
-    FakeCircuit
+    FakeCircuit,
+    TestCircuit.Circuit
   ]

@@ -8,6 +8,6 @@ defmodule FakeCircuitTest do
   test "manager opens the circuit when it reaches the threshold limit" do
     assert {:ok, true} = Manager.is_closed?(@circuit)
 
-    for x <- 1..4 ,do: Manager.increment_error_counter(@circuit)
+    for _ <- 1..4 ,do: Manager.increment_error_counter(@circuit)
   end
 end

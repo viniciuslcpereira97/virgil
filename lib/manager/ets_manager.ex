@@ -46,7 +46,7 @@ defmodule Virgil.Manager.ETSManager do
 
   @impl GenServer
   def handle_call({:is_closed?, circuit}, _from, state) do
-    Logger.info("[#{__MODULE__}][Circuit:#{circuit}] Checking if circuit is closed")
+    Logger.info("[#{__MODULE__}] [#{circuit}] Checking if circuit is closed")
 
     [{_circuit, %{state: circuit_state}}] = :ets.lookup(@ets_table, circuit)
 
@@ -55,7 +55,7 @@ defmodule Virgil.Manager.ETSManager do
 
   @impl GenServer
   def handle_call({:increment_counter, circuit}, _from, state) do
-    Logger.info("[#{__MODULE__}][Circuit:#{circuit}] Incrementing error counter")
+    Logger.info("[#{__MODULE__}] [#{circuit}] Incrementing error counter")
 
     [{circuit_name, %{error_counter: current_counter} = circuit}] = :ets.lookup(@ets_table, circuit)
 
@@ -68,7 +68,7 @@ defmodule Virgil.Manager.ETSManager do
 
   @impl GenServer
   def handle_call({:decrement_counter, circuit}, _from, state) do
-    Logger.info("[#{__MODULE__}][Circuit:#{circuit}] Decrement error counter")
+    Logger.info("[#{__MODULE__}] [#{circuit}] Decrement error counter")
 
     [{_circuit, %{error_counter: current_counter} = circuit}] = :ets.lookup(@ets_table, circuit)
 
@@ -79,7 +79,7 @@ defmodule Virgil.Manager.ETSManager do
 
   @impl GenServer
   def handle_cast({:close, circuit}, state) do
-    Logger.info("[#{__MODULE__}][Circuit:#{circuit}] Closing circuit")
+    Logger.info("[#{__MODULE__}] [#{circuit}] Closing circuit")
 
     :ets.insert(@ets_table, {circuit, %{state: :closed, error_counter: 0}})
 
@@ -88,7 +88,7 @@ defmodule Virgil.Manager.ETSManager do
 
   @impl GenServer
   def handle_cast({:open, circuit}, state) do
-    Logger.info("[#{__MODULE__}][Circuit:#{circuit}] Openning circuit")
+    Logger.info("[#{__MODULE__}] [#{circuit}] Openning circuit")
 
     :ets.insert(@ets_table, {circuit, %{state: :open, error_counter: 0}})
 
