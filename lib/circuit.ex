@@ -31,9 +31,9 @@ defmodule Virgil.Circuit do
 
           Circuit.run()
           |> handle_circuit_response()
+        else
+          Logger.info("[#{__MODULE__}] Circuit is not closed")
         end
-
-        Logger.info("[#{__MODULE__}] Circuit is not closed")
       end
 
       @spec error_threshold :: integer()

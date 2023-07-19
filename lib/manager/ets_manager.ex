@@ -46,9 +46,9 @@ defmodule Virgil.Manager.ETSManager do
 
   @impl GenServer
   def handle_call({:is_closed?, circuit}, _from, state) do
-    Logger.info("[#{__MODULE__}] [#{circuit}] Checking if circuit is closed")
-
     [{_circuit, %{state: circuit_state}}] = :ets.lookup(@ets_table, circuit)
+
+    Logger.info("[#{__MODULE__}] [#{circuit}] Circuit is #{circuit_state}")
 
     {:reply, circuit_state == :closed, state}
   end
