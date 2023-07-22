@@ -29,7 +29,8 @@ defmodule Virgil.Circuit do
         if is_closed? do
           Logger.info("[#{__MODULE__}] Running circuit")
 
-          Circuit.run()
+          params
+          |> Circuit.run()
           |> handle_circuit_response()
         else
           Logger.info("[#{__MODULE__}] Circuit is not closed")
