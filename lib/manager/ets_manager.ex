@@ -29,12 +29,12 @@ defmodule Virgil.Manager.ETSManager do
   end
 
   @impl Manager
-  def close(circuit), do:
-    GenServer.cast(@manager_server, {:close, circuit})
+  def close(circuit),
+    do: GenServer.cast(@manager_server, {:close, circuit})
 
   @impl Manager
-  def open(circuit), do:
-    GenServer.cast(@manager_server, {:open, circuit})
+  def open(circuit),
+    do: GenServer.cast(@manager_server, {:open, circuit})
 
   @impl Manager
   def increment_error_counter(circuit),
@@ -57,7 +57,8 @@ defmodule Virgil.Manager.ETSManager do
   def handle_call({:increment_counter, circuit}, _from, state) do
     Logger.info("[#{__MODULE__}] [#{circuit}] Incrementing error counter")
 
-    [{circuit_name, %{error_counter: current_counter} = circuit}] = :ets.lookup(@ets_table, circuit)
+    [{circuit_name, %{error_counter: current_counter} = circuit}] =
+      :ets.lookup(@ets_table, circuit)
 
     updated_counter = current_counter + 1
 

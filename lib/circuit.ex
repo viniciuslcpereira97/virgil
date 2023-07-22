@@ -41,13 +41,17 @@ defmodule Virgil.Circuit do
       def error_threshold, do: @error_threshold
 
       defp handle_circuit_response({:ok, response}) do
-        :telemetry.execute([:virgil, :circuit, :success], %{circuit_response: response}, %{circuit: __MODULE__})
+        :telemetry.execute([:virgil, :circuit, :success], %{circuit_response: response}, %{
+          circuit: __MODULE__
+        })
 
         {:ok, []}
       end
 
       defp handle_circuit_response({:error, response}) do
-        :telemetry.execute([:virgil, :circuit, :failure], %{circuit_response: response}, %{circuit: __MODULE__})
+        :telemetry.execute([:virgil, :circuit, :failure], %{circuit_response: response}, %{
+          circuit: __MODULE__
+        })
 
         {:error, []}
       end
