@@ -1,5 +1,7 @@
 defmodule Virgil do
-  @moduledoc false
+  @moduledoc """
+  Virgil abstracts the use and managing application circuit breakers.
+  """
 
   defmodule Config do
     @moduledoc false

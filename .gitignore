@@ -26,3 +26,4 @@ circuit_breaker-*.tar
 /tmp/
 
 lib/test_circuit/
+config/
