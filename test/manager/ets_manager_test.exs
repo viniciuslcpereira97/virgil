@@ -1,27 +1,21 @@
 defmodule Virgil.Manager.EtsManagerTest do
-  use ExUnit.Case, async: false
+  use ExUnit.Case, async: true
 
   alias Virgil.Manager.ETSManager, as: Manager
 
   @circuit_name Test
 
-  test "is_closed?/1 returns true when circuit is closed" do
+  test "ETS Manager full test" do
     assert {:ok, true} = Manager.is_closed?(@circuit_name)
-  end
 
-  test "close/1" do
-    assert :ok = Manager.close(@circuit_name)
-  end
-
-  test "open/1" do
     assert :ok = Manager.open(@circuit_name)
-  end
+    assert {:ok, false} = Manager.is_closed?(@circuit_name)
 
-  test "increment_error_counter/1" do
+    assert :ok = Manager.close(@circuit_name)
+    assert {:ok, true} = Manager.is_closed?(@circuit_name)
+
     assert {:ok, 1} = Manager.increment_error_counter(@circuit_name)
-  end
-
-  test "decrement_error_counter/1" do
+    assert {:ok, 2} = Manager.increment_error_counter(@circuit_name)
     assert {:ok, 0} = Manager.decrement_error_counter(@circuit_name)
   end
 end
