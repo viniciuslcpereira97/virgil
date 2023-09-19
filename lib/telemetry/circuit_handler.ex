@@ -1,4 +1,6 @@
 defmodule Virgil.Telemetry.CircuitHandler do
+  @moduledoc false
+
   require Logger
 
   alias Virgil.Config
@@ -17,5 +19,5 @@ defmodule Virgil.Telemetry.CircuitHandler do
     end
   end
 
-  defp circuit_manager, do: Config.manager()
+  defp circuit_manager, do: Config.circuit_manager()
 end

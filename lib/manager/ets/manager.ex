@@ -1,4 +1,6 @@
 defmodule Virgil.Manager.ETSManager do
+  @moduledoc false
+
   use GenServer
 
   require Logger
@@ -40,10 +42,6 @@ defmodule Virgil.Manager.ETSManager do
   def increment_error_counter(circuit),
     do: GenServer.call(@manager_server, {:increment_counter, circuit})
 
-  @impl Manager
-  def decrement_error_counter(_),
-    do: {:ok, 0}
-
   @impl GenServer
   def handle_call({:is_closed?, circuit}, _from, state) do
     [{_circuit, %{state: circuit_state}}] = :ets.lookup(@ets_table, circuit)
@@ -68,17 +66,6 @@ defmodule Virgil.Manager.ETSManager do
   end
 
   @impl GenServer
-  def handle_call({:decrement_counter, circuit}, _from, state) do
-    Logger.debug("[#{__MODULE__}] [#{circuit}] Decrement error counter")
-
-    [{_circuit, %{error_counter: current_counter} = circuit}] = :ets.lookup(@ets_table, circuit)
-
-    :ets.insert(@ets_table, {circuit, %{circuit | error_counter: current_counter - 1}})
-
-    {:reply, {:ok, current_counter - 1}, state}
-  end
-
-  @impl GenServer
   def handle_cast({:close, circuit}, state) do
     Logger.debug("[#{__MODULE__}] [#{circuit}] Closing circuit")
 
@@ -93,7 +80,20 @@ defmodule Virgil.Manager.ETSManager do
 
     :ets.insert(@ets_table, {circuit, %{state: :open, error_counter: 0}})
 
+    schedule_circuit_openning(circuit, circuit.reset_timeout())
+
     {:noreply, state}
+  end
+
+  @impl GenServer
+  def handle_info({:close, circuit}, state) do
+    close(circuit)
+
+    {:noreply, state}
+  end
+
+  defp schedule_circuit_openning(circuit, reset_timeout) do
+    Process.send_after(self(), {:close, circuit}, reset_timeout * 1_000)
   end
 
   defp initialize_tables do

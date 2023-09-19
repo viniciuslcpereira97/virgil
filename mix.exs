@@ -2,7 +2,7 @@ defmodule Virgil.MixProject do
   use Mix.Project
 
   @app :virgil
-  @version "1.0.0"
+  @version "1.0.1"
   @github_url "https://github.com/viniciuslcpereira97/circuit-breaker"
 
   def project do
@@ -23,7 +23,7 @@ defmodule Virgil.MixProject do
 
   defp package do
     [
-      files: ~w(lib/manager/manager.ex mix.exs .formatter.exs),
+      files: ~w(lib/ mix.exs .formatter.exs),
       licenses: ["Apache-2.0"],
       links: %{GitHub: @github_url}
     ]

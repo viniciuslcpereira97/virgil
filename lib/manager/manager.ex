@@ -1,5 +1,7 @@
 defmodule Virgil.Manager do
-  @moduledoc false
+  @moduledoc """
+  Virgil Manager callbacks
+  """
 
   @type circuit_name :: :atom
 
@@ -14,13 +16,6 @@ defmodule Virgil.Manager do
   Increments the circuit error counter
   """
   @callback increment_error_counter(circuit_name()) ::
-              {:ok, integer()}
-              | {:error, any()}
-
-  @doc """
-  Decrements the circuit error counter
-  """
-  @callback decrement_error_counter(circuit_name()) ::
               {:ok, integer()}
               | {:error, any()}
 

@@ -1,4 +1,20 @@
 defmodule Virgil.Circuit do
+  @moduledoc """
+  Circuit implementation
+  """
+
+  @type t :: %__MODULE__{
+    error_threshold: integer(),
+    reset_timeout: integer(),
+    failures: integer(),
+    state: :open | :closed | :half_open
+  }
+
+  defstruct error_threshold: 0,
+    reset_timeout: 0,
+    failures: 0,
+    state: nil
+
   @callback run(any()) :: {:ok, any()} | {:error, any()}
 
   defmacro __using__(opts) do
@@ -16,7 +32,8 @@ defmodule Virgil.Circuit do
 
       alias __MODULE__, as: Circuit
 
-      @error_threshold opts[:error_threshold] || 5
+      @error_threshold opts[:error_threshold] || Config.default_error_threshold()
+      @reset_timeout opts[:reset_timeout] || Config.default_reset_timeout()
 
       @spec execute(any()) :: {:ok, any()} | {:error, any()}
       def execute(params) do
@@ -36,7 +53,10 @@ defmodule Virgil.Circuit do
       @spec error_threshold :: integer()
       def error_threshold, do: @error_threshold
 
-      defp circuit_manager, do: Config.manager()
+      @spec reset_timeout :: integer()
+      def reset_timeout, do: @reset_timeout
+
+      defp circuit_manager, do: Config.circuit_manager()
 
       defp handle_response({:ok, response}) do
         :telemetry.execute(

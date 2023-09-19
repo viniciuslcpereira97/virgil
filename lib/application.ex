@@ -1,4 +1,6 @@
 defmodule Virgil.Application do
+  @moduledoc false
+
   use Application
 
   alias Virgil.Telemetry.CircuitHandler

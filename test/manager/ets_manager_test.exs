@@ -16,6 +16,5 @@ defmodule Virgil.Manager.EtsManagerTest do
 
     assert {:ok, 1} = Manager.increment_error_counter(@circuit_name)
     assert {:ok, 2} = Manager.increment_error_counter(@circuit_name)
-    assert {:ok, 0} = Manager.decrement_error_counter(@circuit_name)
   end
 end
