@@ -3,7 +3,7 @@ defmodule Virgil.Manager.EtsManagerTest do
 
   alias Virgil.Manager.ETSManager, as: Manager
 
-  @circuit_name Test
+  @circuit_name FakeCircuit
 
   test "ETS Manager full test" do
     assert {:ok, true} = Manager.is_closed?(@circuit_name)

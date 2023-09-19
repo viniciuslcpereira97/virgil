@@ -18,6 +18,6 @@ defmodule Virgil.Application do
       {Virgil.Manager.ETSManager, []}
     ]
 
-    Supervisor.start_link(children, strategy: :one_for_one)
+    Supervisor.start_link(children, name: Virgil.Supervisor, strategy: :one_for_one)
   end
 end

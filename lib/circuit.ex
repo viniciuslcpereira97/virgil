@@ -1,9 +1,5 @@
 defmodule Virgil.Circuit do
-  @callback run(any()) ::
-              :ok
-              | :error
-              | {:ok, any()}
-              | {:error, any()}
+  @callback run(any()) :: {:ok, any()} | {:error, any()}
 
   defmacro __using__(opts) do
     quote do
@@ -31,7 +27,7 @@ defmodule Virgil.Circuit do
 
           params
           |> run()
-          |> Handler.circuit_response(Circuit)
+          |> handle_response()
         else
           Logger.info("[#{__MODULE__}] Circuit is not closed")
         end
@@ -41,6 +37,26 @@ defmodule Virgil.Circuit do
       def error_threshold, do: @error_threshold
 
       defp circuit_manager, do: Config.manager()
+
+      defp handle_response({:ok, response}) do
+        :telemetry.execute(
+          [:virgil, :circuit, :success],
+          %{circuit_response: response},
+          %{
+            circuit: Circuit
+          }
+        )
+      end
+
+      defp handle_response({:error, response}) do
+        :telemetry.execute(
+          [:virgil, :circuit, :failure],
+          %{circuit_response: response},
+          %{
+            circuit: Circuit
+          }
+        )
+      end
     end
   end
 end
