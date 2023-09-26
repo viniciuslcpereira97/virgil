@@ -8,7 +8,7 @@ by adding `virgil` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:virgil, "~> 0.1.0"}
+    {:virgil, "~> 1.0.1"}
   ]
 end
 ```
