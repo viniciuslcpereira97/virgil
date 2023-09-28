@@ -2,7 +2,7 @@ defmodule Virgil.MixProject do
   use Mix.Project
 
   @app :virgil
-  @version "1.0.1"
+  @version "1.0.2"
   @github_url "https://github.com/viniciuslcpereira97/circuit-breaker"
 
   def project do

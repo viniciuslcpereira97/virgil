@@ -10,7 +10,7 @@ by adding `virgil` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:virgil, "~> 1.0.1"}
+    {:virgil, "~> 1.0.2"}
   ]
 end
 ```
@@ -25,7 +25,7 @@ be found at <https://hexdocs.pm/virgil>.
 
 You can define a module that represents an application circuit following the example:
 
-```exs
+```elixir
 defmodule MyCustomCircuit do
   @moduledoc false
 
@@ -52,7 +52,7 @@ end
 You can execute the circuit pipeline using the `MyCustomCircuit.execute/1` function.
 This function receives one argument and pass it to the defined `MyCustomCircuit:run/1` function.
 
-```exs
+```elixir
 %{document_number: "11122233300", name: "John Doe"}
 |> MyCustomCircuit.execute()
 ```
