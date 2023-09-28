@@ -30,7 +30,7 @@ defmodule MyCustomCircuit do
   @moduledoc false
 
   # error_threshold: max number of tries until the circuit be openned
-  # reset_timeout: timeout in seconds until the manager opens circuit back
+  # reset_timeout: timeout in seconds until the manager close circuit back
   use Virgil.Circuit,
     error_threshold: 5,
     reset_timeout: 10
