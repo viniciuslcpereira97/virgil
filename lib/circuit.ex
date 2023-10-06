@@ -4,13 +4,15 @@ defmodule Virgil.Circuit do
   """
 
   @type t :: %__MODULE__{
+    name: atom(),
     error_threshold: integer(),
     reset_timeout: integer(),
     failures: integer(),
     state: :open | :closed | :half_open
   }
 
-  defstruct error_threshold: 0,
+  defstruct name: nil,
+    error_threshold: 0,
     reset_timeout: 0,
     failures: 0,
     state: nil
@@ -55,6 +57,16 @@ defmodule Virgil.Circuit do
 
       @spec reset_timeout :: integer()
       def reset_timeout, do: @reset_timeout
+
+      def circuit do
+        %Virgil.Circuit{
+          name: Circuit,
+          failures: 0,
+          state: :closed,
+          error_threshold: @error_threshold,
+          reset_timeout: @reset_timeout
+        }
+      end
 
       defp circuit_manager, do: Config.circuit_manager()
 

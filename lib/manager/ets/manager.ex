@@ -55,12 +55,12 @@ defmodule Virgil.Manager.ETSManager do
   def handle_call({:increment_counter, circuit}, _from, state) do
     Logger.debug("[#{__MODULE__}] [#{circuit}] Incrementing error counter")
 
-    [{circuit_name, %{error_counter: current_counter} = circuit}] =
+    [{circuit_name, %{failures: current_counter} = circuit}] =
       :ets.lookup(@ets_table, circuit)
 
     updated_counter = current_counter + 1
 
-    :ets.insert(@ets_table, {circuit_name, %{circuit | error_counter: updated_counter}})
+    :ets.insert(@ets_table, {circuit_name, %{circuit | failures: updated_counter}})
 
     {:reply, {:ok, updated_counter}, state}
   end
@@ -69,7 +69,9 @@ defmodule Virgil.Manager.ETSManager do
   def handle_cast({:close, circuit}, state) do
     Logger.debug("[#{__MODULE__}] [#{circuit}] Closing circuit")
 
-    :ets.insert(@ets_table, {circuit, %{state: :closed, error_counter: 0}})
+    circuit_struct= circuit.circuit()
+
+    :ets.insert(@ets_table, {circuit, %{circuit_struct | state: :closed, failures: 0}})
 
     {:noreply, state}
   end
@@ -78,7 +80,9 @@ defmodule Virgil.Manager.ETSManager do
   def handle_cast({:open, circuit}, state) do
     Logger.debug("[#{__MODULE__}] [#{circuit}] Openning circuit")
 
-    :ets.insert(@ets_table, {circuit, %{state: :open, error_counter: 0}})
+    circuit_struct = circuit.circuit()
+
+    :ets.insert(@ets_table, {circuit, %{circuit_struct | state: :open, failures: 0}})
 
     schedule_circuit_openning(circuit, circuit.reset_timeout())
 
@@ -92,9 +96,8 @@ defmodule Virgil.Manager.ETSManager do
     {:noreply, state}
   end
 
-  defp schedule_circuit_openning(circuit, reset_timeout) do
-    Process.send_after(self(), {:close, circuit}, reset_timeout * 1_000)
-  end
+  defp schedule_circuit_openning(circuit, reset_timeout),
+    do: Process.send_after(self(), {:close, circuit}, reset_timeout * 1_000)
 
   defp initialize_tables do
     :ets.new(@ets_table, [:named_table, :public, :set])
@@ -108,7 +111,7 @@ defmodule Virgil.Manager.ETSManager do
 
   defp initialize_circuits() do
     Config.registered_circuits()
-    |> Enum.map(&{&1, %{state: Config.default_circuit_state(), error_counter: 0}})
+    |> Enum.map(&{&1, &1.circuit()})
     |> Enum.each(&:ets.insert(:circuits, &1))
   end
 end

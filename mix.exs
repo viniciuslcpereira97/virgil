@@ -2,7 +2,7 @@ defmodule Virgil.MixProject do
   use Mix.Project
 
   @app :virgil
-  @version "1.0.2"
+  @version "1.0.3"
   @github_url "https://github.com/viniciuslcpereira97/circuit-breaker"
 
   def project do
@@ -33,7 +33,7 @@ defmodule Virgil.MixProject do
     [
       main: "readme",
       source_url: @github_url,
-      source_ref: "v#{@version}",
+      source_ref: "#{@version}",
       formatter_opts: [gfm: true],
       extras: ~w(README.md)
     ]
