@@ -27,3 +27,4 @@ circuit_breaker-*.tar
 
 lib/test_circuit/
 config/
+.iex.exs
