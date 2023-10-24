@@ -41,5 +41,7 @@ defmodule Virgil.Manager.GenserverManager do
   @impl GenServer
   def handle_call(:is_closed?, _from, state) do
     %{state: current_state} = state
+
+    {:reply, {:ok, current_state == :closed}, state}
   end
 end
