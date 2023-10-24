@@ -28,7 +28,8 @@ defmodule Virgil.Manager.GenserverManager do
     do: GenServer.call(circuit_name, :is_closed?)
 
   @impl Virgil.Manager
-  def increment_error_counter(_circuit), do: :ok
+  def increment_error_counter(%Circuit{name: circuit_name}),
+    do: GenServer.call(circuit_name, :increment_failures)
 
   @impl GenServer
   def handle_cast(:open, state),
@@ -40,8 +41,15 @@ defmodule Virgil.Manager.GenserverManager do
 
   @impl GenServer
   def handle_call(:is_closed?, _from, state) do
-    %{state: current_state} = state
+    %Circuit{state: current_state} = state
 
     {:reply, {:ok, current_state == :closed}, state}
+  end
+
+  @impl GenServer
+  def handle_call(:increment_failures, _from, state) do
+    %Circuit{failures: current_failures} = state
+
+    {:reply, {:ok, current_failures + 1}, %Circuit{state | failures: current_failures + 1}}
   end
 end
