@@ -32,23 +32,29 @@ defmodule Virgil.Manager.GenserverManager do
     do: GenServer.call(circuit_name, :increment_failures)
 
   @impl GenServer
-  def handle_cast(:open, state),
-    do: {:noreply, %Circuit{state | state: :open}}
+  def handle_cast(:open, %Circuit{name: circuit} = state) do
+    Logger.debug("[#{__MODULE__}] [#{circuit}] Openning circuit")
 
-  @impl GenServer
-  def handle_cast(:close, state),
-    do: {:noreply, %Circuit{state | state: :closed}}
-
-  @impl GenServer
-  def handle_call(:is_closed?, _from, state) do
-    %Circuit{state: current_state} = state
-
-    {:reply, {:ok, current_state == :closed}, state}
+    {:noreply, %Circuit{state | state: :open}}
   end
 
   @impl GenServer
-  def handle_call(:increment_failures, _from, state) do
-    %Circuit{failures: current_failures} = state
+  def handle_cast(:close, %Circuit{name: circuit} = state) do
+    Logger.debug("[#{__MODULE__}] [#{circuit}] Closing circuit")
+
+    {:noreply, %Circuit{state | state: :closed}}
+  end
+
+  @impl GenServer
+  def handle_call(:is_closed?, _from, %Circuit{name: circuit, state: circuit_state} = state) do
+    Logger.debug("[#{__MODULE__}] [#{circuit}] Circuit is #{circuit_state}")
+
+    {:reply, {:ok, circuit_state == :closed}, state}
+  end
+
+  @impl GenServer
+  def handle_call(:increment_failures, _from, %Circuit{name: circuit, failures: current_failures} = state) do
+    Logger.debug("[#{__MODULE__}] [#{circuit}] Incrementig circuit failures")
 
     {:reply, {:ok, current_failures + 1}, %Circuit{state | failures: current_failures + 1}}
   end

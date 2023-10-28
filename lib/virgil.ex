@@ -42,10 +42,11 @@ defmodule Virgil do
 
     Current available modules:
       - Virgil.Manager.ETSManager
+      - Virgil.Manager.GenserverManager
     """
     @spec circuit_manager :: module()
     def circuit_manager,
-      do: Virgil.Manager.ETSManager
+      do: Application.get_env(:virgil, :manager)
 
     @doc """
     All application registered circuits

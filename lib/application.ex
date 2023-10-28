@@ -17,7 +17,7 @@ defmodule Virgil.Application do
     )
 
     children = [
-      {Virgil.Manager.ETSManager, []}
+      Virgil.Manager.Genserver.Supervisor
     ]
 
     Supervisor.start_link(children, name: Virgil.Supervisor, strategy: :one_for_one)
