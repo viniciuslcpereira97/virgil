@@ -7,9 +7,7 @@ defmodule Virgil.Manager.Genserver.Supervisor do
   alias Virgil.Manager.GenserverManager
 
   def init(_arg) do
-    children =
-      Config.registered_circuits()
-      |> Enum.map(&build_circuit_spec(&1.circuit()))
+    children = Enum.map(Config.registered_circuits(), &build_circuit_spec(&1.circuit()))
 
     Supervisor.init(children, strategy: :one_for_one)
   end

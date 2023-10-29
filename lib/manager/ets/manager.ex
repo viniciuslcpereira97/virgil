@@ -55,8 +55,7 @@ defmodule Virgil.Manager.ETSManager do
   def handle_call({:increment_counter, circuit}, _from, state) do
     Logger.debug("[#{__MODULE__}] [#{circuit}] Incrementing error counter")
 
-    [{circuit_name, %{failures: current_counter} = circuit}] =
-      :ets.lookup(@ets_table, circuit)
+    [{circuit_name, %{failures: current_counter} = circuit}] = :ets.lookup(@ets_table, circuit)
 
     updated_counter = current_counter + 1
 
@@ -69,7 +68,7 @@ defmodule Virgil.Manager.ETSManager do
   def handle_cast({:close, circuit}, state) do
     Logger.debug("[#{__MODULE__}] [#{circuit}] Closing circuit")
 
-    circuit_struct= circuit.circuit()
+    circuit_struct = circuit.circuit()
 
     :ets.insert(@ets_table, {circuit, %{circuit_struct | state: :closed, failures: 0}})
 

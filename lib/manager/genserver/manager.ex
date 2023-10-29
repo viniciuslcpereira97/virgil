@@ -53,7 +53,11 @@ defmodule Virgil.Manager.GenserverManager do
   end
 
   @impl GenServer
-  def handle_call(:increment_failures, _from, %Circuit{name: circuit, failures: current_failures} = state) do
+  def handle_call(
+        :increment_failures,
+        _from,
+        %Circuit{name: circuit, failures: current_failures} = state
+      ) do
     Logger.debug("[#{__MODULE__}] [#{circuit}] Incrementig circuit failures")
 
     {:reply, {:ok, current_failures + 1}, %Circuit{state | failures: current_failures + 1}}

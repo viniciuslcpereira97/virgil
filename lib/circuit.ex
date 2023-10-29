@@ -4,18 +4,18 @@ defmodule Virgil.Circuit do
   """
 
   @type t :: %__MODULE__{
-    name: atom(),
-    error_threshold: integer(),
-    reset_timeout: integer(),
-    failures: integer(),
-    state: :open | :closed | :half_open
-  }
+          name: atom(),
+          error_threshold: integer(),
+          reset_timeout: integer(),
+          failures: integer(),
+          state: :open | :closed | :half_open
+        }
 
   defstruct name: nil,
-    error_threshold: 0,
-    reset_timeout: 0,
-    failures: 0,
-    state: nil
+            error_threshold: 0,
+            reset_timeout: 0,
+            failures: 0,
+            state: nil
 
   @callback run(any()) :: {:ok, any()} | {:error, any()}
 
