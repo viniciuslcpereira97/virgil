@@ -5,11 +5,8 @@ defmodule Virgil.Manager.ETSManager do
 
   require Logger
 
-  alias Virgil.{Config, Manager}
+  alias Virgil.Config
 
-  @behaviour Manager
-
-  @manager_server :ets_manager
   @ets_table :circuits
 
   def start_link(_args) do
@@ -22,25 +19,6 @@ defmodule Virgil.Manager.ETSManager do
 
     {:ok, %{}}
   end
-
-  @impl Manager
-  def is_closed?(circuit) do
-    is_closed? = GenServer.call(@manager_server, {:is_closed?, circuit})
-
-    {:ok, is_closed?}
-  end
-
-  @impl Manager
-  def close(circuit),
-    do: GenServer.cast(@manager_server, {:close, circuit})
-
-  @impl Manager
-  def open(circuit),
-    do: GenServer.cast(@manager_server, {:open, circuit})
-
-  @impl Manager
-  def increment_error_counter(circuit),
-    do: GenServer.call(@manager_server, {:increment_counter, circuit})
 
   @impl GenServer
   def handle_call({:is_closed?, circuit}, _from, state) do
@@ -90,7 +68,11 @@ defmodule Virgil.Manager.ETSManager do
 
   @impl GenServer
   def handle_info({:close, circuit}, state) do
-    close(circuit)
+    Logger.debug("[#{__MODULE__}] [#{circuit}] Closing circuit")
+
+    circuit_struct = circuit.circuit()
+
+    :ets.insert(@ets_table, {circuit, %{circuit_struct | state: :closed, failures: 0}})
 
     {:noreply, state}
   end
