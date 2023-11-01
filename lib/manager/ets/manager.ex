@@ -15,7 +15,20 @@ defmodule Virgil.Manager.ETSManager do
 
   @impl GenServer
   def init(_args) do
-    initialize_tables()
+    :ets.new(@ets_table, [:named_table, :public, :set])
+
+    case Config.registered_circuits() do
+      [] ->
+        nil
+
+      nil ->
+        nil
+
+      _ ->
+        Config.registered_circuits()
+        |> Enum.map(&{&1, &1.circuit()})
+        |> Enum.each(&:ets.insert(:circuits, &1))
+    end
 
     {:ok, %{}}
   end
@@ -79,20 +92,4 @@ defmodule Virgil.Manager.ETSManager do
 
   defp schedule_circuit_openning(circuit, reset_timeout),
     do: Process.send_after(self(), {:close, circuit}, reset_timeout * 1_000)
-
-  defp initialize_tables do
-    :ets.new(@ets_table, [:named_table, :public, :set])
-
-    case Config.registered_circuits() do
-      [] -> nil
-      nil -> nil
-      _ -> initialize_circuits()
-    end
-  end
-
-  defp initialize_circuits() do
-    Config.registered_circuits()
-    |> Enum.map(&{&1, &1.circuit()})
-    |> Enum.each(&:ets.insert(:circuits, &1))
-  end
 end
