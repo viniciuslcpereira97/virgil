@@ -10,7 +10,7 @@ by adding `virgil` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:virgil, "~> 1.0.2"}
+    {:virgil, "~> 0.1.0"}
   ]
 end
 ```
@@ -18,6 +18,11 @@ end
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at <https://hexdocs.pm/virgil>.
+
+## Available virgil managers
+
+- Virgil.Manager.ETSManager
+- Virgil.Manager.GenserverManager
 
 ## Custom circuit example
 
