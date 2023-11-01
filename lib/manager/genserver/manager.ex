@@ -10,6 +10,8 @@ defmodule Virgil.Manager.GenserverManager do
   @impl true
   def init(circuit), do: {:ok, circuit}
 
+  def adapter, do: Virgil.Manager.Genserver.Adapter
+
   def start_link(%{name: circuit_name} = circuit),
     do: GenServer.start_link(__MODULE__, circuit, name: circuit_name)
 

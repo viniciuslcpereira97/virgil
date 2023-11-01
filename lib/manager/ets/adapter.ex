@@ -3,19 +3,21 @@ defmodule Virgil.Manager.Ets.Adapter do
 
   @behaviour Virgil.Manager
 
-  @impl true
-  def is_closed?(circuit),
-    do: {:ok, GenServer.call(:ets_manager, {:is_closed?, circuit})}
+  alias Virgil.Circuit
 
   @impl true
-  def close(circuit),
-    do: GenServer.cast(:ets_manager, {:close, circuit})
+  def is_closed?(%Circuit{name: circuit_name}),
+    do: {:ok, GenServer.call(:ets_manager, {:is_closed?, circuit_name})}
 
   @impl true
-  def open(circuit),
-    do: GenServer.cast(:ets_manager, {:open, circuit})
+  def close(%Circuit{name: circuit_name}),
+    do: GenServer.cast(:ets_manager, {:close, circuit_name})
 
   @impl true
-  def increment_error_counter(circuit),
-    do: GenServer.call(:ets_manager, {:increment_counter, circuit})
+  def open(%Circuit{name: circuit_name}),
+    do: GenServer.cast(:ets_manager, {:open, circuit_name})
+
+  @impl true
+  def increment_error_counter(%Circuit{name: circuit_name}),
+    do: GenServer.call(:ets_manager, {:increment_counter, circuit_name})
 end

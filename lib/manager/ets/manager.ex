@@ -9,10 +9,6 @@ defmodule Virgil.Manager.ETSManager do
 
   @ets_table :circuits
 
-  def start_link(_args) do
-    GenServer.start_link(__MODULE__, %{}, name: :ets_manager)
-  end
-
   @impl GenServer
   def init(_args) do
     :ets.new(@ets_table, [:named_table, :public, :set])
@@ -32,6 +28,11 @@ defmodule Virgil.Manager.ETSManager do
 
     {:ok, %{}}
   end
+
+  def adapter, do: Virgil.Manager.Ets.Adapter
+
+  def start_link(_args),
+    do: GenServer.start_link(__MODULE__, %{}, name: :ets_manager)
 
   @impl GenServer
   def handle_call({:is_closed?, circuit}, _from, state) do
