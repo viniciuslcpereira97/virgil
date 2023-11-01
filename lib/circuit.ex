@@ -39,7 +39,9 @@ defmodule Virgil.Circuit do
 
       @spec execute(any()) :: {:ok, any()} | {:error, any()}
       def execute(params) do
-        {:ok, is_closed?} = circuit_manager().is_closed?(__MODULE__)
+        {:ok, is_closed?} =
+          circuit()
+          |> circuit_manager().adapter().is_closed?()
 
         if is_closed? do
           Logger.info("[#{__MODULE__}] Running circuit")
@@ -60,7 +62,7 @@ defmodule Virgil.Circuit do
 
       def circuit do
         %Virgil.Circuit{
-          name: Circuit,
+          name: __MODULE__,
           failures: 0,
           state: :closed,
           error_threshold: @error_threshold,
@@ -75,7 +77,7 @@ defmodule Virgil.Circuit do
           [:virgil, :circuit, :success],
           %{circuit_response: response},
           %{
-            circuit: Circuit
+            circuit: __MODULE__
           }
         )
       end
@@ -85,7 +87,7 @@ defmodule Virgil.Circuit do
           [:virgil, :circuit, :failure],
           %{circuit_response: response},
           %{
-            circuit: Circuit
+            circuit: __MODULE__
           }
         )
       end
