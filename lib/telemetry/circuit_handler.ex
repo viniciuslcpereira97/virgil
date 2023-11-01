@@ -9,15 +9,20 @@ defmodule Virgil.Telemetry.CircuitHandler do
     Logger.debug("Success circuit event received")
   end
 
-  def handle_event([:virgil, :circuit, :failure], _measurements, %{circuit: circuit}, _config) do
-    Logger.debug("[#{__MODULE__}] [#{circuit}] Received failure event")
+  def handle_event(
+        [:virgil, :circuit, :failure],
+        _measurements,
+        %{circuit: circuit_module},
+        _config
+      ) do
+    adapter = Config.circuit_manager().adapter()
+    %_{error_threshold: error_threshold} = circuit = circuit_module.circuit()
 
-    {:ok, error_counter} = circuit_manager().increment_error_counter(circuit)
+    Logger.debug("[#{__MODULE__}] [#{circuit_module}] Received failure event")
 
-    if error_counter >= circuit.error_threshold() do
-      circuit_manager().open(circuit)
-    end
+    {:ok, error_counter} = adapter.increment_error_counter(circuit)
+
+    if error_counter >= error_threshold,
+      do: adapter.open(circuit)
   end
-
-  defp circuit_manager, do: Config.circuit_manager()
 end

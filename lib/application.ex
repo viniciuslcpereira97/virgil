@@ -16,10 +16,14 @@ defmodule Virgil.Application do
       nil
     )
 
-    children = [
-      {Virgil.Manager.ETSManager, []}
-    ]
-
-    Supervisor.start_link(children, name: Virgil.Supervisor, strategy: :one_for_one)
+    Virgil.Config.circuit_manager()
+    |> startup_manager()
+    |> Supervisor.start_link(name: Virgil.Supervisor, strategy: :one_for_one)
   end
+
+  defp startup_manager(Virgil.Manager.ETSManager),
+    do: [{Virgil.Manager.ETSManager, []}]
+
+  defp startup_manager(Virgil.Manager.GenserverManager),
+    do: [Virgil.Manager.Genserver.Supervisor]
 end

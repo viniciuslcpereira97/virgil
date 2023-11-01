@@ -5,42 +5,34 @@ defmodule Virgil.Manager.ETSManager do
 
   require Logger
 
-  alias Virgil.{Config, Manager}
+  alias Virgil.Config
 
-  @behaviour Manager
-
-  @manager_server :ets_manager
   @ets_table :circuits
-
-  def start_link(_args) do
-    GenServer.start_link(__MODULE__, %{}, name: :ets_manager)
-  end
 
   @impl GenServer
   def init(_args) do
-    initialize_tables()
+    :ets.new(@ets_table, [:named_table, :public, :set])
+
+    case Config.registered_circuits() do
+      [] ->
+        nil
+
+      nil ->
+        nil
+
+      _ ->
+        Config.registered_circuits()
+        |> Enum.map(&{&1, &1.circuit()})
+        |> Enum.each(&:ets.insert(:circuits, &1))
+    end
 
     {:ok, %{}}
   end
 
-  @impl Manager
-  def is_closed?(circuit) do
-    is_closed? = GenServer.call(@manager_server, {:is_closed?, circuit})
+  def adapter, do: Virgil.Manager.Ets.Adapter
 
-    {:ok, is_closed?}
-  end
-
-  @impl Manager
-  def close(circuit),
-    do: GenServer.cast(@manager_server, {:close, circuit})
-
-  @impl Manager
-  def open(circuit),
-    do: GenServer.cast(@manager_server, {:open, circuit})
-
-  @impl Manager
-  def increment_error_counter(circuit),
-    do: GenServer.call(@manager_server, {:increment_counter, circuit})
+  def start_link(_args),
+    do: GenServer.start_link(__MODULE__, %{}, name: :ets_manager)
 
   @impl GenServer
   def handle_call({:is_closed?, circuit}, _from, state) do
@@ -55,8 +47,7 @@ defmodule Virgil.Manager.ETSManager do
   def handle_call({:increment_counter, circuit}, _from, state) do
     Logger.debug("[#{__MODULE__}] [#{circuit}] Incrementing error counter")
 
-    [{circuit_name, %{failures: current_counter} = circuit}] =
-      :ets.lookup(@ets_table, circuit)
+    [{circuit_name, %{failures: current_counter} = circuit}] = :ets.lookup(@ets_table, circuit)
 
     updated_counter = current_counter + 1
 
@@ -69,7 +60,7 @@ defmodule Virgil.Manager.ETSManager do
   def handle_cast({:close, circuit}, state) do
     Logger.debug("[#{__MODULE__}] [#{circuit}] Closing circuit")
 
-    circuit_struct= circuit.circuit()
+    circuit_struct = circuit.circuit()
 
     :ets.insert(@ets_table, {circuit, %{circuit_struct | state: :closed, failures: 0}})
 
@@ -91,27 +82,15 @@ defmodule Virgil.Manager.ETSManager do
 
   @impl GenServer
   def handle_info({:close, circuit}, state) do
-    close(circuit)
+    Logger.debug("[#{__MODULE__}] [#{circuit}] Closing circuit")
+
+    circuit_struct = circuit.circuit()
+
+    :ets.insert(@ets_table, {circuit, %{circuit_struct | state: :closed, failures: 0}})
 
     {:noreply, state}
   end
 
   defp schedule_circuit_openning(circuit, reset_timeout),
     do: Process.send_after(self(), {:close, circuit}, reset_timeout * 1_000)
-
-  defp initialize_tables do
-    :ets.new(@ets_table, [:named_table, :public, :set])
-
-    case Config.registered_circuits() do
-      [] -> nil
-      nil -> nil
-      _ -> initialize_circuits()
-    end
-  end
-
-  defp initialize_circuits() do
-    Config.registered_circuits()
-    |> Enum.map(&{&1, &1.circuit()})
-    |> Enum.each(&:ets.insert(:circuits, &1))
-  end
 end
