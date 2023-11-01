@@ -1,7 +1,7 @@
 defmodule Virgil.Manager.Ets.Adapter do
   @moduledoc false
 
-  @behaviour Virgil.Manager
+  @behaviour Virgil.Adapter
 
   alias Virgil.Circuit
 

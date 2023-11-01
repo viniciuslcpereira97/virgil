@@ -3,7 +3,7 @@ defmodule Virgil.Manager.Genserver.Adapter do
 
   alias Virgil.Circuit
 
-  @behaviour Virgil.Manager
+  @behaviour Virgil.Adapter
 
   @impl true
   def close(%Circuit{name: circuit_name}),

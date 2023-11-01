@@ -1,6 +1,6 @@
-defmodule Virgil.Manager do
+defmodule Virgil.Adapter do
   @moduledoc """
-  Virgil Manager callbacks
+  Virgil Adapter callbacks
   """
 
   @type circuit_name :: :atom
