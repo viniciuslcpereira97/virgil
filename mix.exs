@@ -2,7 +2,7 @@ defmodule Virgil.MixProject do
   use Mix.Project
 
   @app :virgil
-  @version "1.0.3"
+  @version "1.0.4"
   @github_url "https://github.com/viniciuslcpereira97/circuit-breaker"
 
   def project do
@@ -35,7 +35,21 @@ defmodule Virgil.MixProject do
       source_url: @github_url,
       source_ref: "#{@version}",
       formatter_opts: [gfm: true],
-      extras: ~w(README.md)
+      extras: ~w(README.md),
+      groups_for_modules: [
+        "Circuit Handlers": [
+          Virgil.Telemetry.CircuitHandler
+        ],
+        "Manager adapter": [
+          Virgil.Adapter,
+          Virgil.Manager.Ets.Adapter,
+          Virgil.Manager.Genserver.Adapter
+        ],
+        "Circuit Managers": [
+          Virgil.Manager.ETSManager,
+          Virgil.Manager.GenserverManager
+        ]
+      ]
     ]
   end
 
